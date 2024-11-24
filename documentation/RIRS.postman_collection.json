@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "7abade03-8e94-4865-9b2c-53c4b3f569e7",
+		"name": "Applikacija_za_vodenje_potnih_stroskov",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "20675452"
+	},
+	"item": [
+		{
+			"name": "Uporabnik",
+			"item": [
+				{
+					"name": "Dodaj uporabnik",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ime\": \"Tia\",\r\n    \"priimek\": \"Zvajker\",\r\n    \"email\": \"tia.zvajker1@gmail.com\",\r\n    \"geslo\": \"tia1234\",\r\n    \"tip\": \"delavec\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url_uporabnik}}/dodaj"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all uporabnik",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url_uporabnik}}/vsi"
+					},
+					"response": []
+				},
+				{
+					"name": "Get one uporabnik",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "{{base_url_uporabnik}}/nekaj@gmail.com"
+					},
+					"response": []
+				},
+				{
+					"name": "Put uporabnik",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ime\": \"Ime\",\r\n    \"priimek\": \"Priimek\",\r\n    \"email\": \"nekaj@gmail.com\",\r\n    \"geslo\": \"Ime12345\",\r\n    \"tip\": \"uporabnik\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url_uporabnik}}/nekaj@gmail.com"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete uporabnik",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url_uporabnik}}/tia.zvajker1@gmail.com"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Potni strosek",
+			"item": [
+				{
+					"name": "Dodaj strosek",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"datum_odhoda\": \"2024-09-09\",\r\n    \"datum_prihoda\": \"2024-09-09\",\r\n    \"kilometrina\": \"150\",\r\n    \"lokacija\": \"Ljubljana\",\r\n    \"opis\": \"Obiskala sem pisarne v LJ.\",\r\n    \"oseba\": \"tia.zvajker1@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url_strosek}}/dodaj"
+					},
+					"response": []
+				},
+				{
+					"name": "Get all strosek",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url_strosek}}/vsi?limit=2&page=1",
+							"host": [
+								"{{base_url_strosek}}"
+							],
+							"path": [
+								"vsi"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "2"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get one strosek",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"ime\": \"Tia\",\r\n    \"priimek\": \"Zvajker\",\r\n    \"email\": \"tia.zvajker1@gmail.com\",\r\n    \"geslo\": \"tia1234\",\r\n    \"tip\": \"delavec\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url_strosek}}/tia.zvajker1@gmail.com_20241120"
+					},
+					"response": []
+				},
+				{
+					"name": "Put uporabnik",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"datum_odhoda\": \"2024-10-27\",\r\n    \"datum_prihoda\": \"2024-10-28\",\r\n    \"kilometrina\": \"125\",\r\n    \"lokacija\": \"Dunaj\",\r\n    \"opis\": \"Sel sem malo se vozit po Praterju.\",\r\n    \"oseba\": \"nekaj@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{base_url_strosek}}/tia.zvajker1@gmail.com_20241120_20241123"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete strosek",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "{{base_url_strosek}}/nekaj@gmail.com_20241027"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Potni strošek po Osebi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url_strosek}}/oseba?imePriimek=Tia Zvajker&limit=5&page=1",
+					"host": [
+						"{{base_url_strosek}}"
+					],
+					"path": [
+						"oseba"
+					],
+					"query": [
+						{
+							"key": "imePriimek",
+							"value": "Tia Zvajker"
+						},
+						{
+							"key": "limit",
+							"value": "5"
+						},
+						{
+							"key": "page",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:9000",
+			"type": "string"
+		},
+		{
+			"key": "base_url_uporabnik",
+			"value": "http://localhost:9000/uporabnik",
+			"type": "string"
+		},
+		{
+			"key": "base_url_strosek",
+			"value": "http://localhost:9000/strosek",
+			"type": "string"
+		}
+	]
+}
