@@ -18,5 +18,8 @@
     "morgan": "^1.10.0",
     "nodemon": "^3.1.7",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
   }
 }

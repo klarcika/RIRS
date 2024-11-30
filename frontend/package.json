@@ -32,6 +32,7 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@testing-library/jest-dom": "^5.0.0",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^14.0.0",
