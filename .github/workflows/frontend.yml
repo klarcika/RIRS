@@ -27,8 +27,8 @@ jobs:
       - name: Cache node_modules  # Caching odvisnosti
         uses: actions/cache@v3
         with:
-          path: 02_DevOps_Testing/primer/frontend/node_modules # Pot do mape node_modules
-          key: ${{ runner.os }}-frontend-${{ hashFiles('02_DevOps_Testing/primer/frontend/package-lock.json') }} # Ključ za cache
+          path: ./frontend/node_modules  # Pot do mape node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('./frontend/package-lock.json') }}  # Ključ za cache
           restore-keys: |
             ${{ runner.os }}-frontend-
         # ⚠️ KAKO DELUJE CACHING:
@@ -38,20 +38,20 @@ jobs:
 
       - name: Install dependencies  # Namestitev odvisnosti
         run: |
-          cd 02_DevOps_Testing/primer/frontend
+          cd ./frontend
           npm ci
         # Če node_modules že obstaja, npm samo preveri skladnost z datotekama package.json in package-lock.json.
 
       - name: Build application  # Gradnja aplikacije
         run: |
-          cd 02_DevOps_Testing/primer/frontend
+          cd ./frontend
           npm run build
 
       - name: Upload build artifacts  # Naložitev gradbenih artefaktov
         uses: actions/upload-artifact@v4
         with:
           name: frontend-build
-          path: 02_DevOps_Testing/primer/frontend/build/
+          path: ./frontend/build/
 
   # Job za testiranje frontenda
   test-frontend:
@@ -70,14 +70,14 @@ jobs:
       - name: Cache node_modules  # Caching odvisnosti
         uses: actions/cache@v3
         with:
-          path: 02_DevOps_Testing/primer/frontend/node_modules
-          key: ${{ runner.os }}-frontend-${{ hashFiles('02_DevOps_Testing/primer/frontend/package-lock.json') }}
+          path: ./frontend/node_modules
+          key: ${{ runner.os }}-frontend-${{ hashFiles('./frontend/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-frontend-
 
       - name: Install dependencies
         run: |
-          cd 02_DevOps_Testing/primer/frontend
+          cd ./frontend
           npm install
         # ⚠️ KAKO PREPOZNATI, DA JE CACHE USPEŠEN?
         # - Če je cache hit, npm install ne namešča novih odvisnosti, ampak preveri obstoječe.
@@ -85,11 +85,11 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          cd 02_DevOps_Testing/primer/frontend
+          cd ./frontend
           npm run test:ci
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
         with:
           name: frontend-coverage
-          path: 02_DevOps_Testing/primer/frontend/coverage/
+          path: ./frontend/coverage/
