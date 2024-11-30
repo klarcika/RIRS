@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import CreateExpenseComponent from "./CreateExpenseComponent";
 import axios from "axios";
 import { BrowserRouter as Router } from "react-router-dom";
 import { IExpense } from "./models/expenses";
 import ExpenseListPage from "./components/AllTravelExpenses";
+import CreateExpenseComponent from "./components/CreateTravelExpenses";
 
 // Mock podatki
 const mockExpenses: IExpense[] = [
