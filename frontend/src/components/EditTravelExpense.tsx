@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, TextField, Button, Box, Grid, Paper } from '@mui/material';
-import { IExpense } from '../models/expenses';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const EditTravelExpense: React.FC = () => {
