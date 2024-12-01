@@ -1,5 +1,7 @@
 module.exports = {
-    testEnvironment: "jsdom", // Ensure this is explicitly set
+    collectCoverage: true,
+    coverageDirectory: 'coverage',
+    testEnvironment: 'jsdom', // Ensure this is explicitly set
     transform: {
         "^.+\\.tsx?$": "babel-jest",
     },
