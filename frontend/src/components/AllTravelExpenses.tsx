@@ -7,10 +7,8 @@ import {
   Paper,
   TableContainer,
   Table,
-  TableHead,
   TableRow,
   TableCell,
-  TableBody,
   Button,
   TablePagination,
   Box,
@@ -128,69 +126,51 @@ const ExpenseListPage: React.FC = () => {
             <Paper elevation={3} sx={{ mt: 2 }}>
               <TableContainer>
                 <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell align="center">
-                        <strong>Datum odhoda</strong>
-                      </TableCell>
-                      <TableCell align="center">
-                        <strong>Datum prihoda</strong>
-                      </TableCell>
-                      <TableCell align="center">
-                        <strong>Naziv</strong>
-                      </TableCell>
-                      <TableCell align="center">
-                        <strong>Delavec</strong>
-                      </TableCell>
-                      <TableCell align="center" colSpan={3}>
-                        <strong></strong>
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {expenses.map((expense) => (
-                        <TableRow key={expense.id} hover>
-                          <TableCell align="center">
-                            {expense.datum_odhoda}
-                          </TableCell>
-                          <TableCell align="center">
-                            {expense.datum_prihoda}
-                          </TableCell>
-                          <TableCell align="center">{expense.naziv}</TableCell>
-                          <TableCell align="center">
-                            <Link to={`/user/${expense.oseba}/expenses`}>
-                              {expense.oseba}
-                            </Link>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button onClick={() => handleDetail(expense.id)}>
-                              <img
-                                  src={detailsIcon}
-                                  alt="Details"
-                                  width="24"
-                                  height="24"
-                              />
-                            </Button>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button onClick={() => handleEdit(expense.id)}>
-                              <img src={editIcon} alt="Edit" width="24" height="24" />
-                            </Button>
-                          </TableCell>
-                          <TableCell align="center">
-                            <Button onClick={() => handleDelete(expense.id)}>
-                              <img
-                                  src={deleteIcon}
-                                  alt="Delete"
-                                  width="24"
-                                  height="24"
-                              />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                    ))}
-                  </TableBody>
+                  {expenses.map((expense) => (
+                      <TableRow key={expense.id} hover>
+                        <TableCell align="center">
+                          {expense.datum_odhoda ? expense.datum_odhoda : "N/A"}  {/* Ensure it's a string */}
+                        </TableCell>
+                        <TableCell align="center">
+                          {expense.datum_prihoda ? expense.datum_prihoda : "N/A"} {/* Ensure it's a string */}
+                        </TableCell>
+                        <TableCell align="center">
+                          {expense.naziv || "No Name"}  {/* Ensure it's a string */}
+                        </TableCell>
+                        <TableCell align="center">
+                          <Link to={`/user/${expense.oseba}/expenses`}>
+                            {expense.oseba || "Unknown User"}  {/* Ensure it's a string */}
+                          </Link>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button onClick={() => handleDetail(expense.id)}>
+                            <img
+                                src={detailsIcon}
+                                alt="Details"
+                                width="24"
+                                height="24"
+                            />
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button onClick={() => handleEdit(expense.id)}>
+                            <img src={editIcon} alt="Edit" width="24" height="24" />
+                          </Button>
+                        </TableCell>
+                        <TableCell align="center">
+                          <Button onClick={() => handleDelete(expense.id)}>
+                            <img
+                                src={deleteIcon}
+                                alt="Delete"
+                                width="24"
+                                height="24"
+                            />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                  ))}
                 </Table>
+
               </TableContainer>
 
               <TablePagination

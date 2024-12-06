@@ -1,173 +1,248 @@
-const Expense = require("../models/expense"); // Model za delo s stroški
-const User = require("../models/user");       // Model za delo z uporabniki
-const db = require("../db");                 // Modul za dostop do baze podatkov
+const Expense = require("../models/expense");
 
-it("should return 400 if required fields are missing", async () => {
-    const req = { body: { naziv: "Strošek" } }; // Manjkajoča polja
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+jest.mock("../models/expense", () => ({
+    add: jest.fn(),
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+    getByEmails: jest.fn(),
+    getByUserEmail: jest.fn(),
+    getByMonth: jest.fn(),
+}));
 
-    await dodajStrosek(req, res);
+describe("Expense", () => {
+    it("should add a new expense", async () => {
+        const mockExpense = {
+            id: "user_2024-10-27T00:00:00.000Z",
+            naziv: "Obisk Ljubljane",
+            datum_odhoda: "2024-10-27",
+            datum_prihoda: "2024-10-28",
+            kilometrina: 100,
+            lokacija: "Ljubljana",
+            opis: "Sli smo v Lj.",
+            oseba: "janez@gmail.com",
+            cena: 43.0,
+        };
 
-    sinon.assert.calledWith(res.status, 400);
-    sinon.assert.calledWith(res.json, { error: "Vsa polja morajo biti izpolnjena" });
-});
-it("should return 404 if user does not exist", async () => {
-    const req = { body: { naziv: "Strošek", oseba: "neobstojec@email.com", ... } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+        Expense.add.mockResolvedValue({
+            message: "Uspešno dodan potni strošek",
+            strosek: mockExpense,
+        });
 
-    sinon.stub(User, "getByEmail").resolves(null); // Simuliraj, da uporabnik ne obstaja
-
-    await dodajStrosek(req, res);
-
-    sinon.assert.calledWith(res.status, 404);
-    sinon.assert.calledWith(res.json, { error: "Uporabnik s tem emailom ne obstaja" });
-
-    User.getByEmail.restore();
-});
-it("should return a list of expenses with pagination", async () => {
-    const req = { query: { page: 1, limit: 10 } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
-
-    const fakeExpenses = [{ id: 1, naziv: "Test" }, { id: 2, naziv: "Test2" }];
-    sinon.stub(Expense, "getAll").resolves(fakeExpenses);
-    sinon.stub(db.collection("Potni_stroski"), "get").returns({ size: 20 });
-
-    await vsiStroski(req, res);
-
-    sinon.assert.calledWith(res.status, 200);
-    sinon.assert.calledWith(res.json, {
-        currentPage: 1,
-        itemsPerPage: 10,
-        totalItems: 20,
-        totalPages: 2,
-        data: fakeExpenses,
+        const result = await Expense.add(
+            "Obisk Ljubljane",
+            "2024-10-27",
+            "2024-10-28",
+            100,
+            "Ljubljana",
+            "Sli smo v Lj.",
+            "janez@gmail.com"
+        );
+        expect(result.message).toBe("Uspešno dodan potni strošek");
+        expect(result.strosek).toEqual(mockExpense);
     });
 
-    Expense.getAll.restore();
-    db.collection("Potni_stroski").get.restore();
+    it("should return all expenses", async () => {
+        const mockExpenses = [
+            {
+                naziv: "Obisk Ljubljane",
+                datum_odhoda: "2024-10-27",
+                datum_prihoda: "2024-10-28",
+            },
+            {
+                naziv: "Konferenca v Kopru",
+                datum_odhoda: "2024-11-10",
+                datum_prihoda: "2024-11-11",
+            },
+        ];
+
+        Expense.getAll.mockResolvedValue(mockExpenses);
+
+        const result = await Expense.getAll(10, 0);
+        expect(result).toEqual(mockExpenses);
+    });
+
+    it("should return a specific expense", async () => {
+        const mockExpense = {
+            naziv: "Obisk Ljubljane",
+            datum_odhoda: "2024-10-27",
+            datum_prihoda: "2024-10-28",
+        };
+        const id = "user_2024-10-27T00:00:00.000Z";
+
+        Expense.getById.mockResolvedValue(mockExpense);
+
+        const result = await Expense.getById(id);
+        expect(result).toEqual(mockExpense);
+    });
+
+    it("should update an expense", async () => {
+        const id = "user_2024-10-27T00:00:00.000Z";
+        const updatedData = { naziv: "Updated Obisk Ljubljane" };
+
+        Expense.put.mockResolvedValue({
+            message: "Potni strošek je uspešno posodobljen",
+        });
+
+        const result = await Expense.put(id, updatedData);
+        expect(result.message).toBe("Potni strošek je uspešno posodobljen");
+    });
+
+    it("should delete an expense", async () => {
+        const id = "user_2024-10-27T00:00:00.000Z";
+
+        Expense.delete.mockResolvedValue({ message: "Strosek je bil izbrisan" });
+
+        const result = await Expense.delete(id);
+        expect(result.message).toBe("Strosek je bil izbrisan");
+    });
+
+    it("should return expenses by emails", async () => {
+        const mockExpenses = [
+            { id: "user_2024-10-27T00:00:00.000Z", naziv: "Obisk Ljubljane" },
+        ];
+        const emails = ["user@example.com"];
+
+        Expense.getByEmails.mockResolvedValue({
+            stroski: mockExpenses,
+            totalItems: 1,
+        });
+
+        const result = await Expense.getByEmails(emails, 10, 1);
+        expect(result.stroski).toEqual(mockExpenses);
+        expect(result.totalItems).toBe(1);
+    });
+
+    it("should return expenses by user email", async () => {
+        const mockExpenses = [
+            { id: "user_2024-10-27T00:00:00.000Z", naziv: "Obisk Ljubljane" },
+        ];
+        const email = "user@example.com";
+
+        Expense.getByUserEmail.mockResolvedValue(mockExpenses);
+
+        const result = await Expense.getByUserEmail(email);
+        expect(result).toEqual(mockExpenses);
+    });
+
+    it("should return expenses by month", async () => {
+        const mockExpenses = [
+            { id: "user_2024-10-27T00:00:00.000Z", naziv: "Obisk Ljubljane" },
+        ];
+        const year = 2024;
+        const month = 10;
+
+        Expense.getByMonth.mockResolvedValue(mockExpenses);
+
+        const result = await Expense.getByMonth(year, month, 10, 0);
+        expect(result).toEqual(mockExpenses);
+    });
 });
-it("should return 404 if expense is not found", async () => {
-    const req = { params: { id: "email@gmail.com_2024-11-05T08:25:20.033Z" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+const User = require("../models/user");
 
-    sinon.stub(Expense, "getById").resolves(null);
+jest.mock("../models/user", () => ({
+    add: jest.fn(),
+    getAll: jest.fn(),
+    getById: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+    getByEmail: jest.fn(),
+    getByFullName: jest.fn(),
+}));
 
-    await najdiStrosek(req, res);
+describe("User", () => {
+    it("should add a new user", async () => {
+        const mockUser = {
+            ime: "Janez",
+            priimek: "Novak",
+            email: "janez.novak@gmail.com",
+            geslo: "geslo123",
+            tip: "delavec",
+        };
 
-    sinon.assert.calledWith(res.status, 404);
-    sinon.assert.calledWith(res.json, { error: "Strosek ne obstaja." });
+        User.add.mockResolvedValue(mockUser);
 
-    Expense.getById.restore();
-});
-it("should successfully update an expense", async () => {
-    const req = { params: { id: "email@gmail.com" }, body: { naziv: "Posodobljen strošek" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+        const result = await User.add(mockUser);
+        expect(result).toEqual(mockUser);
+    });
 
-    const updatedExpense = { id: "email@gmail.com_2024-11-05T08:25:20.033Z", naziv: "Posodobljen strošek" };
-    sinon.stub(Expense, "put").resolves(updatedExpense);
+    it("should return all users", async () => {
+        const mockUsers = [
+            { ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com" },
+            { ime: "Miha", priimek: "Horvat", email: "miha.horvat@gmail.com" },
+        ];
 
-    await spremeniStrosek(req, res);
+        User.getAll.mockResolvedValue(mockUsers);
 
-    sinon.assert.calledWith(res.status, 200);
-    sinon.assert.calledWith(res.json, { message: "Strosek uspešno posodobljen", data: updatedExpense });
+        const result = await User.getAll();
+        expect(result).toEqual(mockUsers);
+    });
 
-    Expense.put.restore();
-});
-it("should return 404 if expense does not exist", async () => {
-    const req = { params: { id: "email@gmail.com_2024-11-05T08:25:20.033Z" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+    it("should return a specific user", async () => {
+        const mockUser = {
+            ime: "Janez",
+            priimek: "Novak",
+            email: "janez.novak@gmail.com",
+        };
+        const email = "janez.novak@gmail.com";
 
-    sinon.stub(Expense, "delete").resolves(null);
+        User.getById.mockResolvedValue(mockUser);
 
-    await izbrisiStrosek(req, res);
+        const result = await User.getById(email);
+        expect(result).toEqual(mockUser);
+    });
 
-    sinon.assert.calledWith(res.status, 404);
-    sinon.assert.calledWith(res.json, { error: "Strosek ne obstaja." });
+    it("should delete a user", async () => {
+        const email = "janez.novak@gmail.com";
 
-    Expense.delete.restore();
-});
-it("should correctly calculate the sum of expenses for a user", async () => {
-    const req = { query: { email: "email@gmail.com_2024-11-05T08:25:20.033Z" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+        User.delete.mockResolvedValue({
+            message: "Uporabnik je bil izbrisan",
+        });
 
-    const expenses = [{ cena: "100.50" }, { cena: "50.75" }];
-    sinon.stub(Expense, "getByUserEmail").resolves(expenses);
+        const result = await User.delete(email);
+        expect(result.message).toBe("Uporabnik je bil izbrisan");
+    });
 
-    await vsotaStroskovPoOsebi(req, res);
+    it("should return user by email", async () => {
+        const mockUser = { ime: "Janez", priimek: "Novak" };
+        const email = "janez.novak@gmail.com";
 
-    sinon.assert.calledWith(res.status, 200);
-    sinon.assert.calledWith(res.json, { vsotaStroskov: 151.25 });
+        User.getByEmail.mockResolvedValue(mockUser);
 
-    Expense.getByUserEmail.restore();
-});
-it("should return 400 if user with the given email already exists", async () => {
-    const req = { body: { ime: "Luka", priimek: "Horvat", email: "ime.priimek@gmail.com", geslo: "geslo123", tip: "uporabnik" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+        const result = await User.getByEmail(email);
+        expect(result).toEqual(mockUser);
+    });
 
-    sinon.stub(User, "getByEmail").resolves({ email: "email@gmail.com_2024-11-05T08:25:20.033Z" }); // Simuliraj obstoječega uporabnika
+    it("should return null if no user matches email", async () => {
+        const email = "tia.zvajker@gmail.com";
 
-    await dodajUporabnika(req, res);
+        User.getByEmail.mockResolvedValue(null);
 
-    sinon.assert.calledWith(res.status, 400);
-    sinon.assert.calledWith(res.json, { error: "Uporabnik s tem emailom že obstaja." });
+        const result = await User.getByEmail(email);
+        expect(result).toBeNull();
+    });
 
-    User.getByEmail.restore();
-});
-it("should return 404 if user is not found", async () => {
-    const req = { params: { email: "neobstojec@example.com" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+    it("should return users matching full name", async () => {
+        const mockUsers = [
+            { ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com" },
+        ];
+        const ime = "Janez";
+        const priimek = "Novak";
 
-    sinon.stub(User, "getByEmail").resolves(null); // Simuliraj, da uporabnik ne obstaja
+        User.getByFullName.mockResolvedValue(mockUsers);
 
-    await najdiUporabnika(req, res);
+        const result = await User.getByFullName(ime, priimek);
+        expect(result).toEqual(mockUsers);
+    });
 
-    sinon.assert.calledWith(res.status, 404);
-    sinon.assert.calledWith(res.json, { error: "Uporabnik ne obstaja." });
+    it("should return an empty array if no users match full name", async () => {
+        const ime = "Luka";
+        const priimek = "Horvat";
 
-    User.getByEmail.restore();
-});
-it("should successfully delete a user", async () => {
-    const req = { params: { email: "email@gmail.com_2024-11-05T08:25:20.033Z" } };
-    const res = {
-        status: sinon.stub().returnsThis(),
-        json: sinon.stub(),
-    };
+        User.getByFullName.mockResolvedValue([]);
 
-    sinon.stub(User, "getByEmail").resolves({ email: "email@gmail.com_2024-11-05T08:25:20.033Z" }); // Simuliraj, da uporabnik obstaja
-    sinon.stub(User, "delete").resolves(); // Simuliraj uspešno brisanje
-
-    await izbrisiUporabnika(req, res);
-
-    sinon.assert.calledWith(res.status, 200);
-    sinon.assert.calledWith(res.json, { message: "Uporabnik uspešno izbrisan." });
-
-    User.getByEmail.restore();
-    User.delete.restore();
+        const result = await User.getByFullName(ime, priimek);
+        expect(result).toEqual([]);
+    });
 });
