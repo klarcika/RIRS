@@ -41,18 +41,24 @@ describe("ExpenseListPage", () => {
     it("navigates to the edit page when the edit button is clicked", async () => {
         mockedAxios.get.mockResolvedValueOnce({
             data: {
-                data: [{ id: "1", naziv: "Test Expense", datum_odhoda: "2023-12-01", datum_prihoda: "2023-12-02", oseba: "Test User" }],
+                data: [{
+                    id: "1",
+                    naziv: "Test Expense",
+                    datum_odhoda: "2023-12-01",
+                    datum_prihoda: "2023-12-02",
+                    oseba: "Test User"
+                }],
                 totalItems: 1,
             },
         });
 
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
-        const editButton = await screen.findByRole("button", { name: /Edit/i });
+        const editButton = await screen.findByRole("button", {name: /Edit/i});
         fireEvent.click(editButton);
 
         // Ensure the mockNavigate function is called with the correct argument
@@ -62,7 +68,7 @@ describe("ExpenseListPage", () => {
     it("renders the title", () => {
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -72,7 +78,7 @@ describe("ExpenseListPage", () => {
     it("displays the loading indicator while fetching data", () => {
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -84,7 +90,7 @@ describe("ExpenseListPage", () => {
 
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -95,14 +101,20 @@ describe("ExpenseListPage", () => {
     it("renders the table with headers after loading data", async () => {
         mockedAxios.get.mockResolvedValueOnce({
             data: {
-                data: [{ id: "1", naziv: "Test Expense", datum_odhoda: "2023-12-01", datum_prihoda: "2023-12-02", oseba: "Test User" }],
+                data: [{
+                    id: "1",
+                    naziv: "Test Expense",
+                    datum_odhoda: "2023-12-01",
+                    datum_prihoda: "2023-12-02",
+                    oseba: "Test User"
+                }],
                 totalItems: 1,
             },
         });
 
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -114,7 +126,7 @@ describe("ExpenseListPage", () => {
     it("renders the month filter input", () => {
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -124,26 +136,32 @@ describe("ExpenseListPage", () => {
     it("updates the month filter state when input changes", () => {
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
         const filterInput = screen.getByLabelText(/Filter by Month/i);
-        fireEvent.change(filterInput, { target: { value: "2023-12" } });
+        fireEvent.change(filterInput, {target: {value: "2023-12"}});
         expect(filterInput).toHaveValue("2023-12");
     });
 
     it("renders pagination and handles page changes", async () => {
         mockedAxios.get.mockResolvedValueOnce({
             data: {
-                data: [{ id: "1", naziv: "Test Expense", datum_odhoda: "2023-12-01", datum_prihoda: "2023-12-02", oseba: "Test User" }],
+                data: [{
+                    id: "1",
+                    naziv: "Test Expense",
+                    datum_odhoda: "2023-12-01",
+                    datum_prihoda: "2023-12-02",
+                    oseba: "Test User"
+                }],
                 totalItems: 20,
             },
         });
 
         render(
             <BrowserRouter>
-                <ExpenseListPage />
+                <ExpenseListPage/>
             </BrowserRouter>
         );
 
@@ -151,6 +169,6 @@ describe("ExpenseListPage", () => {
         fireEvent.click(nextPageButton);
 
         // Verify the current page has changed
-        expect(mockedAxios.get).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({ params: expect.objectContaining({ page: 2 }) }));
+        expect(mockedAxios.get).toHaveBeenCalledWith(expect.any(String), expect.objectContaining({params: expect.objectContaining({page: 2})}));
     });
 });
