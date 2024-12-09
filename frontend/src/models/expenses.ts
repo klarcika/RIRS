@@ -1,13 +1,11 @@
-import { IUser } from "./user";
-
-export interface IExpense{
+export interface IExpense {
     id: string;
     naziv: string;
-    datum_odhoda: string;
-    datum_prihoda: string;
-    kilometrina: number;
+    datum_odhoda: string; // or Date if it's a Date object
+    datum_prihoda: string; // or Dat
+    kilometrina?: number;
     lokacija: string;
-    opis: string;
+    opis?: string;
     oseba: string;
-    cena: number;
+    cena?: number;
 }

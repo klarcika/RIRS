@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { UserAuth } from "../context/AuthContext";
 
 import {
   Container,
@@ -26,6 +27,8 @@ const CreateExpenseComponent: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const {user} = UserAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setExpense({
@@ -78,17 +81,6 @@ const CreateExpenseComponent: React.FC = () => {
       formErrors['opis'] = 'Prosimo, vnesite opis.';
     }
 
-    if (!expense.oseba) {
-      formIsValid = false;
-      formErrors['oseba'] = 'Prosimo, vnesite email osebe.';
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailRegex.test(expense.oseba)) {
-        formIsValid = false;
-        formErrors['oseba'] = 'Vnesite veljaven email naslov.';
-      }
-    }
-
     setErrors(formErrors);
     return formIsValid;
   };
@@ -105,7 +97,7 @@ const CreateExpenseComponent: React.FC = () => {
     try {
       const response = await axios.post(
         "http://localhost:9000/strosek/dodaj",
-        expense
+        {...expense, oseba: user?.email}
       );
       setSuccessMessage("Strošek je bil uspešno dodan!");
       console.log("Expense added:", response.data);
@@ -229,18 +221,6 @@ const CreateExpenseComponent: React.FC = () => {
                 fullWidth
                 error={!!errors['opis']}
                 helperText={errors['opis']}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                label="Oseba (email)"
-                name="oseba"
-                value={expense.oseba}
-                onChange={handleChange}
-                fullWidth
-                error={!!errors['oseba']}
-                helperText={errors['oseba']}
               />
             </Grid>
 

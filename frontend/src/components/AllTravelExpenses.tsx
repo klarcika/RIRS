@@ -7,8 +7,10 @@ import {
   Paper,
   TableContainer,
   Table,
+  TableHead,
   TableRow,
   TableCell,
+  TableBody,
   Button,
   TablePagination,
   Box,
@@ -18,7 +20,9 @@ import detailsIcon from "../assets/more2.png";
 import editIcon from "../assets/edit2.png";
 import deleteIcon from "../assets/delete2.png";
 import { IExpense } from "../models/expenses";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
+import { Link } from "react-router-dom";
 
 const ExpenseListPage: React.FC = () => {
   const [expenses, setExpenses] = useState<IExpense[]>([]);
@@ -27,9 +31,10 @@ const ExpenseListPage: React.FC = () => {
   const [page, setPage] = useState<number>(0);
   const [rowsPerPage, setRowsPerPage] = useState<number>(10);
   const [totalItems, setTotalItems] = useState<number>(0);
-  const [monthFilter, setMonthFilter] = useState<string>("");
 
   const navigate = useNavigate();
+
+  const [monthFilter, setMonthFilter] = useState<string>("");
 
   useEffect(() => {
     const fetchExpenses = async () => {
@@ -52,6 +57,7 @@ const ExpenseListPage: React.FC = () => {
         setLoading(false);
       }
     };
+
     fetchExpenses();
   }, [page, rowsPerPage, monthFilter]);
 
@@ -75,7 +81,7 @@ const ExpenseListPage: React.FC = () => {
     setPage(0);
   };
 
-  const handleDetail = (id: string | null) => {
+  const handleDetail = async (id: string | null) => {
     if (id) {
       navigate(`/detail/${id}`);
     } else {
@@ -126,51 +132,67 @@ const ExpenseListPage: React.FC = () => {
             <Paper elevation={3} sx={{ mt: 2 }}>
               <TableContainer>
                 <Table>
-                  {expenses.map((expense) => (
-                      <TableRow key={expense.id} hover>
-                        <TableCell align="center">
-                          {expense.datum_odhoda ? expense.datum_odhoda : "N/A"}  {/* Ensure it's a string */}
-                        </TableCell>
-                        <TableCell align="center">
-                          {expense.datum_prihoda ? expense.datum_prihoda : "N/A"} {/* Ensure it's a string */}
-                        </TableCell>
-                        <TableCell align="center">
-                          {expense.naziv || "No Name"}  {/* Ensure it's a string */}
-                        </TableCell>
-                        <TableCell align="center">
-                          <Link to={`/user/${expense.oseba}/expenses`}>
-                            {expense.oseba || "Unknown User"}  {/* Ensure it's a string */}
-                          </Link>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Button onClick={() => handleDetail(expense.id)}>
-                            <img
-                                src={detailsIcon}
-                                alt="Details"
-                                width="24"
-                                height="24"
-                            />
-                          </Button>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Button onClick={() => handleEdit(expense.id)}>
-                            <img src={editIcon} alt="Edit" width="24" height="24" />
-                          </Button>
-                        </TableCell>
-                        <TableCell align="center">
-                          <Button onClick={() => handleDelete(expense.id)}>
-                            <img
-                                src={deleteIcon}
-                                alt="Delete"
-                                width="24"
-                                height="24"
-                            />
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                  ))}
+                  <TableHead>
+                    <TableRow>
+                      <TableCell align="center">
+                        <strong>Datum odhoda</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>Datum prihoda</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>Naziv</strong>
+                      </TableCell>
+                      <TableCell align="center">
+                        <strong>Delavec</strong>
+                      </TableCell>
+                      <TableCell align="center" colSpan={3}>
+                        <strong></strong>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {expenses.map((expense) => (
+                        <TableRow key={expense.id} hover>
+                          <TableCell align="center">{expense.datum_odhoda}</TableCell>
+                          <TableCell align="center">
+                            {expense.datum_prihoda}
+                          </TableCell>
+                          <TableCell align="center">{expense.naziv}</TableCell>
+                          <TableCell align="center">
+                            <Link to={`/user/${expense.oseba}/expenses`}>
+                              {expense.oseba}
+                            </Link>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button onClick={() => handleDetail(expense.id)}>
+                              <img
+                                  src={detailsIcon}
+                                  alt="Details"
+                                  width="24"
+                                  height="24"
+                              />
+                            </Button>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button onClick={() => handleEdit(expense.id)}>
+                              <img src={editIcon} alt="Edit" width="24" height="24" />
+                            </Button>
+                          </TableCell>
+                          <TableCell align="center">
+                            <Button onClick={() => handleDelete(expense.id)}>
+                              <img
+                                  src={deleteIcon}
+                                  alt="Delete"
+                                  width="24"
+                                  height="24"
+                              />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                    ))}
+                  </TableBody>
                 </Table>
-
               </TableContainer>
 
               <TablePagination

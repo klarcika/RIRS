@@ -1,4 +1,3 @@
-import { IUser } from "./user";
 
 export interface IAddExpense{
     id: string;

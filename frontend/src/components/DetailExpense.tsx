@@ -5,7 +5,7 @@ import { IExpense } from '../models/expenses';
 import { useParams, useNavigate } from 'react-router-dom';
 
 const DetailExpense: React.FC = () => {
-    const { id } = useParams<{ id: string }>(); // Ensures `id` is typed as a string
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [expense, setExpense] = useState<IExpense | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -21,12 +21,11 @@ const DetailExpense: React.FC = () => {
             }
         };
 
-        if (id) { // Ensure `id` exists before fetching
+        if (id) { 
             fetchExpense();
         }
     }, [id]);
 
-    // Handler for navigating back to the homepage
     const handleBackToHome = () => {
         navigate('/');
     };
@@ -57,7 +56,6 @@ const DetailExpense: React.FC = () => {
                 </Typography>
             )}
 
-            {/* Button to navigate back to the homepage */}
             <Button
                 variant="outlined"
                 color="primary"
