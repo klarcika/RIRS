@@ -11,13 +11,14 @@ const Routing: React.FC = () => {
 
     useEffect(() => {
         if (user) {
-            api.get(`/uporabnik/${user.email}`)
-                .then(res => {
+            api
+                .get(`/uporabnik/${user.email}`)
+                .then((res) => {
                     const profile = res.data;
                     setCurrentUser(profile);
                     setLoading(false);
                 })
-                .catch(err => {
+                .catch((err) => {
                     console.error("Error fetching user profile:", err);
                     setLoading(false);
                 });
