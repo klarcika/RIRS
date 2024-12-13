@@ -60,6 +60,7 @@ const ExpenseListPage: React.FC = () => {
         fetchExpenses();
     }, [page, rowsPerPage, monthFilter]);
 
+
     const handleDelete = async (id: string) => {
         try {
             await axios.delete(`http://localhost:9000/strosek/${id}`);
@@ -95,7 +96,8 @@ const ExpenseListPage: React.FC = () => {
     const handleMonthChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMonthFilter(event.target.value);
         setPage(0);
-    };
+    }
+    
 
     return (
         <Container maxWidth="lg" sx={{ mt: 5 }}>
@@ -117,6 +119,11 @@ const ExpenseListPage: React.FC = () => {
                         },
                     }}
                 />
+            </Box>
+            <Box display="flex" justifyContent="flex-end" mb={3}>
+                <Button variant="contained" color="primary" onClick={() => navigate("/stats")}>
+                    Prikazi statistiko
+                </Button>
             </Box>
 
             {loading ? (

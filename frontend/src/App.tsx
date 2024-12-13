@@ -13,6 +13,7 @@ import Login from './validation/Login';
 import Register from './validation/Registration';
 import Logout from './validation/Logout';
 import Routing from './components/Routing';
+import ExpenseStats from './components/ExpenseStats';
 
 
 function App() {
@@ -32,6 +33,8 @@ function App() {
             <Route path="/dodaj-strosek" element={<CreateTravelExpenses />} />
             <Route path="/user/:email/expenses" element={<UserExpenseOverview />} />
             <Route path="/detail/:id" element={<DetailExpense />} />
+            <Route path="/stats" element={<ExpenseStats />} />
+
           </Routes>
       </Router>
     </AuthContextProvider>
