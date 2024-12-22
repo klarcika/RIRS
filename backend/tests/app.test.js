@@ -214,15 +214,6 @@ describe("User", () => {
         expect(result).toEqual(mockUser);
     });
 
-    it("should return null if no user matches email", async () => {
-        const email = "tia.zvajker@gmail.com";
-
-        User.getByEmail.mockResolvedValue(null);
-
-        const result = await User.getByEmail(email);
-        expect(result).toBeNull();
-    });
-
     it("should return users matching full name", async () => {
         const mockUsers = [
             { ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com" },

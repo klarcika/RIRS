@@ -11,7 +11,6 @@ jest.mock('../context/AuthContext', () => ({
 describe('Navbar Component', () => {
   it('renders public buttons when user is not logged in', () => {
     (UserAuth as jest.Mock).mockReturnValue({ user: null });
-
     render(
       <BrowserRouter>
         <Navbar />
@@ -33,7 +32,6 @@ describe('Navbar Component', () => {
         <Navbar />
       </BrowserRouter>
     );
-
     expect(screen.getByText(/Domov/i)).toBeInTheDocument();
     expect(screen.getByText(/Dodaj strošek/i)).toBeInTheDocument();
     expect(screen.getByText(/Odjava/i)).toBeInTheDocument();

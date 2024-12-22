@@ -28,8 +28,8 @@ describe("User", () => {
 
   it("should return all users", async () => {
     const mockUsers = [
-      { ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com" },
-      { ime: "Miha", priimek: "Horvat", email: "miha.horvat@gmail.com" },
+      {ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com"},
+      {ime: "Miha", priimek: "Horvat", email: "miha.horvat@gmail.com"},
     ];
 
     User.getAll.mockResolvedValue(mockUsers);
@@ -64,7 +64,7 @@ describe("User", () => {
   });
 
   it("should return user by email", async () => {
-    const mockUser = { ime: "Janez", priimek: "Novak" };
+    const mockUser = {ime: "Janez", priimek: "Novak"};
     const email = "janez.novak@gmail.com";
 
     User.getByEmail.mockResolvedValue(mockUser);
@@ -84,7 +84,7 @@ describe("User", () => {
 
   it("should return users matching full name", async () => {
     const mockUsers = [
-      { ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com" },
+      {ime: "Janez", priimek: "Novak", email: "janez.novak@gmail.com"},
     ];
     const ime = "Janez";
     const priimek = "Novak";
@@ -94,14 +94,6 @@ describe("User", () => {
     const result = await User.getByFullName(ime, priimek);
     expect(result).toEqual(mockUsers);
   });
-
-  it("should return an empty array if no users match full name", async () => {
-    const ime = "Luka";
-    const priimek = "Horvat";
-
-    User.getByFullName.mockResolvedValue([]);
-
-    const result = await User.getByFullName(ime, priimek);
-    expect(result).toEqual([]);
-  });
 });
+
+

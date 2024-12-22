@@ -9,5 +9,4 @@ router.get("/vsota", expenseController.vsotaStroskovPoOsebi);
 router.get('/:id', expenseController.najdiStrosek);
 router.put('/:id', expenseController.spremeniStrosek);
 router.delete('/:id', expenseController.izbrisiStrosek);
-
 module.exports = router;

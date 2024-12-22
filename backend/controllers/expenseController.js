@@ -213,5 +213,5 @@ module.exports = {
   spremeniStrosek,
   izbrisiStrosek,
   stroskiPoOsebi,
-  vsotaStroskovPoOsebi,
+  vsotaStroskovPoOsebi
 };
