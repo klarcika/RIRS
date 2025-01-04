@@ -1,7 +1,6 @@
 # Ime pipeline-a za frontend
 name: Frontend CI
 
-# Dogodki, ki sprožijo workflow (push in pull request na glavno vejo)
 on:
   push:
     branches:
@@ -10,19 +9,10 @@ on:
     branches:
       - main
 
-env:
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  PROJECT_KEY: ${{ secrets.PROJECT_KEY }}
-
 jobs:
   # Testiranje frontenda
   test-frontend:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -54,7 +44,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: Development
     if: github.ref == 'refs/heads/main'
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -82,7 +71,6 @@ jobs:
     if: github.ref == 'refs/heads/production'
     environment:
       name: Production
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
