@@ -40,68 +40,63 @@ jobs:
           name: frontend-coverage
           path: frontend/coverage/
 
-  # Gradnja Docker slike in nalaganje na Docker Hub - Development
+  #gradnja Docker sike in nalaganje na docker hub- development
   dockerize-and-push-dev:
-    needs: test-frontend
-    runs-on: ubuntu-latest
-    environment: Development
-    if: github.ref == 'refs/heads/main'
-    env:
-      DOCKER_USERNAME: ${{ secrets.RIRS_DOCKER_USERNAME }}
-      DOCKER_TOKEN: ${{ secrets.RIRS_DOCKER_TOKEN }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_TOKEN }}
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.DOCKER_USERNAME }}/frontend:dev ./frontend
-          docker tag ${{ env.DOCKER_USERNAME }}/frontend:dev ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
-      - name: Push Docker image to Docker Hub
-        run: |
-          docker push ${{ env.DOCKER_USERNAME }}/frontend:dev
-          docker push ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+        needs: test-frontend
+        runs-on: ubuntu-latest
+        environment: Development
+        if: github.ref == 'refs/heads/main'
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          - name: Login to Docker Hub
+            uses: docker/login-action@v2
+            with:
+              username: ${{ env.DOCKER_USERNAME }}
+              password: ${{ env.DOCKER_TOKEN }}
+          - name: Build Docker image
+            run: |
+              docker build -t ${{ env.DOCKER_USERNAME }}/frontend:dev ./frontend
+              docker tag ${{ env.DOCKER_USERNAME }}/frontend:dev ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+          - name: Push Docker image to Docker Hub
+            run: |
+              docker push ${{ env.DOCKER_USERNAME }}/frontend:dev
+              docker push ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
 
-  # Gradnja Docker slike in nalaganje na Docker Hub - Production
+        # Gradnja Docker slike in nalaganje na Docker Hub - Production
   dockerize-and-push-prod:
-    needs: test-frontend
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/production'
-    environment:
-      name: Production
-    env:
-      DOCKER_USERNAME: ${{ secrets.RIRS_DOCKER_USERNAME }}
-      DOCKER_TOKEN: ${{ secrets.RIRS_DOCKER_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.RIRS_SONAR_TOKEN }}
-      PROJECT_KEY: ${{ secrets.RIRS_PROJECT_KEY }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-      - name: Check SonarCloud Quality Gate
-        run: |
-          curl -u ${{ env.SONAR_TOKEN }}: \
-            "https://sonarcloud.io/api/project_badges/measure?project=${{ env.PROJECT_KEY }}&metric=alert_status" | grep -q "OK" || exit 1
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_TOKEN }}
-      - name: Build Docker image
-        run: |
-          docker build -t ${{ env.DOCKER_USERNAME }}/frontend:prod ./frontend
-          docker tag ${{ env.DOCKER_USERNAME }}/frontend:prod ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
-      - name: Push Docker image to Docker Hub
-        run: |
-          docker push ${{ env.DOCKER_USERNAME }}/frontend:prod
-          docker push ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
-      - name: Deploy to Vercel
-        uses: amondnet/vercel-action@v20
-        with:
-          vercel_token: ${{ secrets.VERCEL_TOKEN }}
-          vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel_project_id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+        needs: test-frontend
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/production'
+        environment:
+          name: Production
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v3
+          - name: Check SonarCloud Quality Gate
+            run: |
+              curl -u ${{ secrets.SONAR_TOKEN }}: \
+                "https://sonarcloud.io/api/project_badges/measure?project=${{ secrets.PROJECT_KEY }}&metric=alert_status" | grep -q "OK" || exit 1
+          - name: Login to Docker Hub
+            uses: docker/login-action@v2
+            with:
+              username: ${{ env.DOCKER_USERNAME }}
+              password: ${{ env.DOCKER_TOKEN }}
+          - name: Build Docker image
+            run: |
+              docker build -t ${{ env.DOCKER_USERNAME }}/frontend:prod ./frontend
+              docker tag ${{ env.DOCKER_USERNAME }}/frontend:prod ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+          - name: Push Docker image to Docker Hub
+            run: |
+              docker push ${{ env.DOCKER_USERNAME }}/frontend:prod
+              docker push ${{ env.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+
+          - name: Deploy to Vercel
+            uses: amondnet/vercel-action@v20
+            with:
+              vercel_token: ${{ env.VERCEL_TOKEN }}
+              vercel_org_id: ${{ secrets.VERCEL_ORG_ID }}
+              vercel_project_id: ${{ env.VERCEL_PROJECT_ID }}
+              vercel_team_id: ${{ secrets.VERCEL_TEAM_ID }}
+
+
