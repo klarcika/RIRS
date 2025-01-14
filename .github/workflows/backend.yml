@@ -58,12 +58,13 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/rirs:dev ./backend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/rirs:dev -t ${{ secrets.DOCKER_USERNAME }}/rirs:latest ./backend
           docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:dev ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/rirs:dev
+          docker push ${{ secrets.DOCKER_USERNAME }}/rirs:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/rirs:${{ github.sha }}
 
   # Gradnja Docker slike in nalaganje na Docker Hub - Production
@@ -85,10 +86,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/rirs:prod ./backend
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/rirs:prod -t ${{ secrets.DOCKER_USERNAME }}/rirs:latest ./backend
           docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:prod ${{ secrets.DOCKER_USERNAME }}/backend:${{ github.sha }}
 
       - name: Push Docker image to Docker Hub
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/rirs:prod
+          docker push ${{ secrets.DOCKER_USERNAME }}/rirs:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/rirs:${{ github.sha }}
