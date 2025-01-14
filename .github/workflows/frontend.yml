@@ -57,7 +57,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/rirs:dev -t ${{ secrets.DOCKER_USERNAME }}/rirs:latest ./frontend
-          docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:dev ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:dev ${{ secrets.DOCKER_USERNAME }}/rirs:${{ github.sha }}
 
       - name: Push Docker image to Docker Hub
         run: |
@@ -90,7 +90,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build --no-cache -t ${{ secrets.DOCKER_USERNAME }}/rirs:prod -t ${{ secrets.DOCKER_USERNAME }}/rirs:latest ./frontend
-          docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:prod ${{ secrets.DOCKER_USERNAME }}/frontend:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/rirs:prod ${{ secrets.DOCKER_USERNAME }}/rirs:${{ github.sha }}
 
       - name: Push Docker image to Docker Hub
         run: |
